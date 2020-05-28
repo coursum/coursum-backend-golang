@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  elasticsearch:
+    build:
+      context: ../
+      dockerfile: ./build/package/elasticsearch.Dockerfile
+      args:
+        - ELK_VERSION
+    environment:
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - ELASTIC_PASSWORD=changeme
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: bind
+        source: ../configs/elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elk
+    restart: always
+
+  logstash:
+    build:
+      context: ../
+      dockerfile: ./build/package/logstash.Dockerfile
+      args:
+        - ELK_VERSION
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    volumes:
+      - type: bind
+        source: ../configs/logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ../configs/logstash/pipeline
+        target: /usr/share/logstash/pipeline
+        read_only: true
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    restart: always
+
+  kibana:
+    build:
+      context: ../
+      dockerfile: ./build/package/kibana.Dockerfile
+      args:
+        - ELK_VERSION
+    volumes:
+      - type: bind
+        source: ../configs/kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    restart: always
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:
