@@ -79,6 +79,22 @@ services:
       - elasticsearch
     restart: always
 
+  server:
+    build:
+      context: ../
+      dockerfile: ./build/package/server.Dockerfile
+      args:
+        - GO_VERSION
+    volumes:
+      - ..:/go/src/app
+    ports:
+      - "8000:8000"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+    restart: always
+
 networks:
   elk:
     driver: bridge
