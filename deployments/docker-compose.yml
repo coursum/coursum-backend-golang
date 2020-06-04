@@ -85,6 +85,8 @@ services:
       dockerfile: ./build/package/server.Dockerfile
       args:
         - GO_VERSION
+    environment:
+      - TZ
     volumes:
       - ..:/go/src/app
     ports:
