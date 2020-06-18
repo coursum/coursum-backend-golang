@@ -1,6 +1,41 @@
 version: "3.8"
 
 services:
+  postgresql:
+    image: postgres:${POSTGRESQL_VERSION}
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_DB
+      - INIT_USER
+      - INIT_PASSWORD
+      - INIT_DB
+      - INIT_PATH
+      - TZ
+    volumes:
+      - type: bind
+        source: ../configs/postgresql/docker-entrypoint-initdb.d/
+        target: /docker-entrypoint-initdb.d/
+        read_only: true
+      - type: bind
+        source: ../configs/postgresql/init-database/
+        target: /init-database/
+        read_only: true
+      - ../database/postgresql/data/:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    networks:
+      - elk
+    command:
+      - "postgres"
+      - "-c"
+      - "listen_addresses=*"
+      - "-c"
+      - "timezone=${TZ}"
+      - "-c"
+      - "log_timezone=${TZ}"
+    restart: always
+
   elasticsearch:
     build:
       context: ../
@@ -58,6 +93,7 @@ services:
       - elk
     depends_on:
       - elasticsearch
+      - postgresql
     restart: always
 
   kibana:
