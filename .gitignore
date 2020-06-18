@@ -2,5 +2,9 @@ database/postgresql/*
 !database/postgresql/.gitkeep
 .env
 
+# jdbc drivers
+*.jar
+
 # databases
 *.sql
+!configs/logstash/statement/*.sql

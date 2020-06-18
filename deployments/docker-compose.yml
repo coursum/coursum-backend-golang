@@ -76,7 +76,11 @@ services:
       args:
         - ELK_VERSION
     environment:
-      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
+      - LOGSTASH_JDBC_DRIVER
+      - INIT_PASSWORD
+      - INIT_USER
+      - INIT_DB
       - TZ
     volumes:
       - type: bind
@@ -84,8 +88,20 @@ services:
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
-        source: ../configs/logstash/pipeline
-        target: /usr/share/logstash/pipeline
+        source: ../configs/logstash/driver/${LOGSTASH_JDBC_DRIVER}
+        target: /usr/share/logstash/logstash-core/lib/jars/${LOGSTASH_JDBC_DRIVER}
+        read_only: true
+      - type: bind
+        source: ../configs/logstash/pipeline/course.conf
+        target: /usr/share/logstash/pipeline/course.conf
+        read_only: true
+      - type: bind
+        source: ../configs/logstash/statement/course.sql
+        target: /usr/share/logstash/statement/course.sql
+        read_only: true
+      - type: bind
+        source: ../configs/logstash/template/coursum-course.json
+        target: /usr/share/logstash/template/coursum-course.json
         read_only: true
     ports:
       - "5000:5000/tcp"
