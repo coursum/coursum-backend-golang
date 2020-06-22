@@ -7,4 +7,4 @@ database/postgresql/*
 
 # databases
 *.sql
-!configs/logstash/statement/*.sql
+!configs/logstash/pipeline/**/*.sql

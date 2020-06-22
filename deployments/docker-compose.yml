@@ -88,20 +88,16 @@ services:
         target: /usr/share/logstash/config/logstash.yml
         read_only: true
       - type: bind
+        source: ../configs/logstash/config/pipelines.yml
+        target: /usr/share/logstash/config/pipelines.yml
+        read_only: true
+      - type: bind
         source: ../configs/logstash/driver/${LOGSTASH_JDBC_DRIVER}
         target: /usr/share/logstash/logstash-core/lib/jars/${LOGSTASH_JDBC_DRIVER}
         read_only: true
       - type: bind
-        source: ../configs/logstash/pipeline/course.conf
-        target: /usr/share/logstash/pipeline/course.conf
-        read_only: true
-      - type: bind
-        source: ../configs/logstash/statement/course.sql
-        target: /usr/share/logstash/statement/course.sql
-        read_only: true
-      - type: bind
-        source: ../configs/logstash/template/coursum-course.json
-        target: /usr/share/logstash/template/coursum-course.json
+        source: ../configs/logstash/pipeline/
+        target: /usr/share/logstash/pipeline/
         read_only: true
     ports:
       - "5000:5000/tcp"

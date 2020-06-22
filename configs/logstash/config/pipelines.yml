@@ -1,0 +1,2 @@
+- pipeline.id: course
+  path.config: "/usr/share/logstash/pipeline/course/course.conf"
