@@ -1,0 +1,25 @@
+{
+  "semester": {
+    "spring": "Spring",
+    "fall": "Fall"
+  },
+  "dayOfWeekList": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ],
+  "periodList": [
+    "1st Period",
+    "2nd Period",
+    "3rd Period",
+    "4th Period",
+    "5th Period",
+    "6th Period",
+    "7th Period"
+  ],
+  "classTimeCodeSeparator": " "
+}
