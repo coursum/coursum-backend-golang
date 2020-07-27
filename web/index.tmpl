@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .title }}</title>
+  <style>
+    .center {
+      display: grid;
+
+      min-height: 100vh;
+
+      text-align: center;
+
+      place-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="center">
+    <div>
+      <h1>{{ .title }}</h1>
+      <p>{{ .message }}</p>
+    </div>
+  </div>
+</body>
+
+</html>
