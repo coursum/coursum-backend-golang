@@ -59,12 +59,25 @@ SELECT DISTINCT class_info.title,
                 class_info.class_type,
                 class_info.class_room,
                 class_master.credit,
+                summary_info.language,
                 class_master.guide_u,
                 class_master.guide_u_e,
+                summary_info.summary,
+                summary_info.summary_e,
+                summary_info.a_class_type,
                 class_info.reg_id,
+                summary_info.g0,
+                summary_info.g1,
+                summary_info.condition,
+                summary_info.condition_e,
+                summary_info.pre_req,
+                summary_info.pre_req_e,
+                summary_info.g2,
                 class_info.kamoku_sort,
-                class_info.year_class_id
+                class_info.year_class_id,
+                summary_info.giga_class
 FROM class_info
 LEFT JOIN class_lecturers ON class_info.year_class_id = class_lecturers.year_class_id
 LEFT JOIN class_master ON class_info.kamoku_sort = class_master.kamoku_sort
+LEFT JOIN summary_info ON class_info.year_class_id = summary_info.year_class_id
 LIMIT 1;

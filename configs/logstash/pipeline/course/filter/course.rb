@@ -14,6 +14,11 @@ def translate(target_locale, source_locale = nil, &block)
   block.call(target_messages, source_messages)
 end
 
+# strip that support removing full-width space
+def strip_space(str)
+  (str || '').gsub(/^[[:space:]]*|[[:space:]]*$/, '')
+end
+
 def split_sort(str, pattern)
   (str || '').split(pattern).reject(&:empty?).sort
 end
@@ -47,6 +52,22 @@ def parse_category(category)
           .split(/[[:space:]]*-[[:space:]]*/)
 end
 
+def translate_language(language_code, locale)
+  translate(locale) do |target|
+    target['language'][language_code] || target['language']['fallback']
+  end
+end
+
+def translate_types_from_ja_to_en(types)
+  types.map do |type|
+    translate('en', 'ja') do |target, source|
+      key = source['class_type'].key(type)
+
+      target['class_type'][key]
+    end
+  end
+end
+
 def filter(event)
   title_name_ja = event.get('title')
   title_name_en = event.get('title_e')
@@ -65,9 +86,9 @@ def filter(event)
     lecturer_id = lecturer_ids[index]
     # TODO: process the value in SQL
     lecturer_is_in_charge = lecturer_types[index] == 10
-    lecturer_name_ja = lecturer_names_ja[index]
-    lecturer_name_kana = lecturer_names_kana[index]
-    lecturer_name_en = lecturer_names_en[index]
+    lecturer_name_ja = strip_space(lecturer_names_ja[index])
+    lecturer_name_kana = strip_space(lecturer_names_kana[index])
+    lecturer_name_en = strip_space(lecturer_names_en[index])
     lecturer_img_url = lecturer_imgs[index] || ''
     lecturer_email = lecturer_emails[index] || ''
 
@@ -97,13 +118,35 @@ def filter(event)
 
   credit = event.get('credit')
 
+  language = event.get('language')
+  language_ja = translate_language(language, 'ja')
+  language_en = translate_language(language, 'en')
+
   category_ja = parse_category(event.get('guide_u'))
   category_en = parse_category(event.get('guide_u_e'))
 
+  summary_ja = strip_space(event.get('summary'))
+  summary_en = strip_space(event.get('summary_e'))
+
+  types_ja = split_sort(event.get('a_class_type'), '、')
+  types_en = translate_types_from_ja_to_en(types_ja)
+
   registration_number = event.get('reg_id')
+  registration_prerequisite_mandatory = split_sort(event.get('g0'), ',')
+  registration_prerequisite_recommended = split_sort(event.get('g1'), ',').reject do |str|
+    registration_prerequisite_mandatory.include?(str)
+  end
+  registration_requirement_ja = strip_space(event.get('condition'))
+  registration_requirement_en = strip_space(event.get('condition_e'))
+  registration_suggestion_ja = strip_space(event.get('pre_req'))
+  registration_suggestion_en = strip_space(event.get('pre_req_e'))
+
+  related = split_sort(event.get('g2'), ',')
 
   curriculum_code = event.get('kamoku_sort')
   year_class_id = event.get('year_class_id')
+
+  tag_is_giga = event.get('giga_class') || false
 
   course = {
     title: {
@@ -133,15 +176,43 @@ def filter(event)
     },
     classroom: classroom,
     credit: credit,
+    language: {
+      ja: language_ja,
+      en: language_en
+    },
     category: {
       ja: category_ja,
       en: category_en
     },
-    registration: {
-      number: registration_number
+    summary: {
+      ja: summary_ja,
+      en: summary_en
     },
+    types: {
+      ja: types_ja,
+      en: types_en
+    },
+    registration: {
+      number: registration_number,
+      prerequisite: {
+        mandatory: registration_prerequisite_mandatory,
+        recommended: registration_prerequisite_recommended
+      },
+      requirement: {
+        ja: registration_requirement_ja,
+        en: registration_requirement_en
+      },
+      suggestion: {
+        ja: registration_suggestion_ja,
+        en: registration_suggestion_en
+      }
+    },
+    related: related,
     curriculumCode: curriculum_code,
-    yearClassId: year_class_id
+    yearClassId: year_class_id,
+    tag: {
+      isGIGA: tag_is_giga
+    }
   }
 
   event.initialize(course)

@@ -21,5 +21,25 @@
     "6th Period",
     "7th Period"
   ],
-  "classTimeCodeSeparator": " "
+  "classTimeCodeSeparator": " ",
+  "language": {
+    "fallback": "Japanese?",
+    "01": "English",
+    "02": "German",
+    "03": "French",
+    "04": "Chinese",
+    "05": "Spanish",
+    "06": "Russian",
+    "10": "Korean",
+    "13": "Japanese",
+    "15": "Malay-Indonesian",
+    "16": "Arabic",
+    "18": "Italian"
+  },
+  "class_type": {
+    "lecture": "Lecture",
+    "workshop": "Workshop",
+    "groupWork": "Group Work",
+    "remote": "Remote"
+  }
 }
