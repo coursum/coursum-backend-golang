@@ -14,3 +14,7 @@
   ## Persistent Queues
   #
   queue.type: persisted
+
+  ## Dead Letter Queues
+  #
+  dead_letter_queue.enable: true
