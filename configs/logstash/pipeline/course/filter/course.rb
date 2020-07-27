@@ -41,27 +41,17 @@ def parse_class_day_codes(class_day_codes, locale)
   end
 end
 
+# " 1.abc - def - ghi" => ["abc", "def", "ghi"]
+def parse_category(category)
+  category.gsub(/[[:space:]]*\d+\./, '')
+          .split(/[[:space:]]*-[[:space:]]*/)
+end
+
 def filter(event)
   title_name_ja = event.get('title')
   title_name_en = event.get('title_e')
   title_postscript_ja = event.get('title_memo') || ''
   title_postscript_en = event.get('title_memo_e') || ''
-
-  schedule_year = event.get('year').to_i
-  schedule_semester_ja = event.get('semester')
-  schedule_semester_en = translate_semester_from_ja_to_en(event.get('semester'))
-  class_day_codes = split_sort(event.get('class_day_code'), ',')
-  schedule_times_ja = parse_class_day_codes(class_day_codes, 'ja')
-  schedule_times_en = parse_class_day_codes(class_day_codes, 'en')
-  # TODO: Investigate class_info column and translate to English
-  schedule_span_ja = event.get('class_type')
-
-  classroom = event.get('class_room')
-
-  registration_number = event.get('reg_id')
-
-  curriculum_code = event.get('kamoku_sort')
-  year_class_id = event.get('year_class_id')
 
   lecturer_ids = event.get('lecturer_ids')
   lecturer_types = event.get('lecturer_types')
@@ -94,6 +84,27 @@ def filter(event)
     }
   end
 
+  schedule_year = event.get('year').to_i
+  schedule_semester_ja = event.get('semester')
+  schedule_semester_en = translate_semester_from_ja_to_en(event.get('semester'))
+  class_day_codes = split_sort(event.get('class_day_code'), ',')
+  schedule_times_ja = parse_class_day_codes(class_day_codes, 'ja')
+  schedule_times_en = parse_class_day_codes(class_day_codes, 'en')
+  # TODO: Investigate class_info column and translate to English
+  schedule_span_ja = event.get('class_type')
+
+  classroom = event.get('class_room')
+
+  credit = event.get('credit')
+
+  category_ja = parse_category(event.get('guide_u'))
+  category_en = parse_category(event.get('guide_u_e'))
+
+  registration_number = event.get('reg_id')
+
+  curriculum_code = event.get('kamoku_sort')
+  year_class_id = event.get('year_class_id')
+
   course = {
     title: {
       name: {
@@ -120,10 +131,15 @@ def filter(event)
         ja: schedule_span_ja
       }
     },
+    classroom: classroom,
+    credit: credit,
+    category: {
+      ja: category_ja,
+      en: category_en
+    },
     registration: {
       number: registration_number
     },
-    classroom: classroom,
     curriculumCode: curriculum_code,
     yearClassId: year_class_id
   }
