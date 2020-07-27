@@ -10,3 +10,7 @@
   xpack.monitoring.enabled: true
   xpack.monitoring.elasticsearch.username: elastic
   xpack.monitoring.elasticsearch.password: changeme
+
+  ## Persistent Queues
+  #
+  queue.type: persisted
