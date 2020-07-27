@@ -21,6 +21,7 @@ class_lecturers AS /* Aggregate columns by auth.projectid */
                    array_agg(auth_faculty.name) AS lecturer_names_ja,
                    array_agg(auth_faculty.name_kana) AS lecturer_names_kana,
                    array_agg(auth_faculty.name_english) AS lecturer_names_en,
+                   array_agg(auth_faculty.img) AS lecturer_imgs,
                    array_agg(auth_faculty.email) AS lecturer_emails
    FROM auth_faculty
    GROUP BY auth_faculty.projectid)
@@ -41,6 +42,7 @@ SELECT DISTINCT class_info.title,
                 class_lecturers.lecturer_names_ja,
                 class_lecturers.lecturer_names_kana,
                 class_lecturers.lecturer_names_en,
+                class_lecturers.lecturer_imgs,
                 class_lecturers.lecturer_emails
 FROM class_info
 LEFT JOIN class_lecturers ON class_info.year_class_id = class_lecturers.year_class_id
