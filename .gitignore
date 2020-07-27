@@ -8,3 +8,7 @@ database/postgresql/*
 # databases
 *.sql
 !configs/logstash/pipeline/**/*.sql
+
+# development
+.rubocop.yml
+.ruby-version
