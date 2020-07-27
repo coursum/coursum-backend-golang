@@ -78,8 +78,8 @@ def filter(event)
     lecturer_name_ja = lecturer_names_ja[index]
     lecturer_name_kana = lecturer_names_kana[index]
     lecturer_name_en = lecturer_names_en[index]
-    lecturer_img_url = lecturer_imgs[index]
-    lecturer_email = lecturer_emails[index]
+    lecturer_img_url = lecturer_imgs[index] || ''
+    lecturer_email = lecturer_emails[index] || ''
 
     {
       id: lecturer_id,
