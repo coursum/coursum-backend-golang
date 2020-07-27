@@ -63,6 +63,31 @@ def filter(event)
   curriculum_code = event.get('kamoku_sort')
   year_class_id = event.get('year_class_id')
 
+  lecturer_ids = event.get('lecturer_ids')
+  lecturer_types = event.get('lecturer_types')
+  lecturer_names_ja = event.get('lecturer_names_ja')
+  lecturer_names_kana = event.get('lecturer_names_kana')
+  lecturer_names_en = event.get('lecturer_names_en')
+
+  lecturers = lecturer_ids.map.with_index do |_, index|
+    lecturer_id = lecturer_ids[index]
+    # TODO: process the value in SQL
+    lecturer_is_in_charge = lecturer_types[index] == 10
+    lecturer_name_ja = lecturer_names_ja[index]
+    lecturer_name_kana = lecturer_names_kana[index]
+    lecturer_name_en = lecturer_names_en[index]
+
+    {
+      id: lecturer_id,
+      isInCharge: lecturer_is_in_charge,
+      name: {
+        ja: lecturer_name_ja,
+        kana: lecturer_name_kana,
+        en: lecturer_name_en
+      },
+    }
+  end
+
   course = {
     title: {
       name: {
@@ -74,6 +99,7 @@ def filter(event)
         en: title_postscript_en
       }
     },
+    lecturers: lecturers,
     schedule: {
       year: schedule_year,
       semester: {
