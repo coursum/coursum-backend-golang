@@ -24,7 +24,24 @@ class_lecturers AS /* Aggregate columns by auth.projectid */
                    array_agg(auth_faculty.img) AS lecturer_imgs,
                    array_agg(auth_faculty.email) AS lecturer_emails
    FROM auth_faculty
-   GROUP BY auth_faculty.projectid)
+   GROUP BY auth_faculty.projectid), --
+class_master AS /* Filter class_master by guide_u (remove old category data)*/
+  (SELECT *
+   FROM class_master /* TODO: find another way to maintain the list */
+   WHERE class_master.guide_u IN (' 1.研究プロジェクト科目',
+                                  ' 2.基盤科目-総合講座科目',
+                                  ' 3.基盤科目-言語コミュニケーション科目',
+                                  ' 4.基盤科目-データサイエンス科目-データサイエンス１',
+                                  ' 5.基盤科目-データサイエンス科目-データサイエンス２',
+                                  ' 6.基盤科目-情報技術基礎科目',
+                                  ' 7.基盤科目-ウェルネス科目',
+                                  ' 8.基盤科目-共通科目',
+                                  ' 9.先端科目-総合政策系',
+                                  '10.先端科目-環境情報系',
+                                  '11.特設科目',
+                                  '12.教職課程教科に関する科目',
+                                  '13.自由科目',
+                                  '14.SFC設置の諸研究所科目') )
 SELECT DISTINCT class_info.title,
                 class_info.title_e,
                 class_info.title_memo,
