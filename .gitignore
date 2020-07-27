@@ -12,3 +12,4 @@ database/postgresql/*
 # development
 .rubocop.yml
 .ruby-version
+.go-version
