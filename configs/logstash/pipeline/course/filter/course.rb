@@ -68,6 +68,7 @@ def filter(event)
   lecturer_names_ja = event.get('lecturer_names_ja')
   lecturer_names_kana = event.get('lecturer_names_kana')
   lecturer_names_en = event.get('lecturer_names_en')
+  lecturer_emails = event.get('lecturer_emails')
 
   lecturers = lecturer_ids.map.with_index do |_, index|
     lecturer_id = lecturer_ids[index]
@@ -76,6 +77,7 @@ def filter(event)
     lecturer_name_ja = lecturer_names_ja[index]
     lecturer_name_kana = lecturer_names_kana[index]
     lecturer_name_en = lecturer_names_en[index]
+    lecturer_email = lecturer_emails[index]
 
     {
       id: lecturer_id,
@@ -85,6 +87,7 @@ def filter(event)
         kana: lecturer_name_kana,
         en: lecturer_name_en
       },
+      email: lecturer_email
     }
   end
 

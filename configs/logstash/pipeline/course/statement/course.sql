@@ -17,10 +17,11 @@ auth_faculty AS /* JOIN filterd auth with faculty */
 class_lecturers AS /* Aggregate columns by auth.projectid */
   (SELECT DISTINCT auth_faculty.projectid AS year_class_id,
                    array_agg(auth_faculty.userid) AS lecturer_ids,
+                   array_agg(auth_faculty.faculty_type) AS lecturer_types,
                    array_agg(auth_faculty.name) AS lecturer_names_ja,
                    array_agg(auth_faculty.name_kana) AS lecturer_names_kana,
                    array_agg(auth_faculty.name_english) AS lecturer_names_en,
-                   array_agg(auth_faculty.faculty_type) AS lecturer_types
+                   array_agg(auth_faculty.email) AS lecturer_emails
    FROM auth_faculty
    GROUP BY auth_faculty.projectid)
 SELECT DISTINCT class_info.title,
@@ -39,7 +40,8 @@ SELECT DISTINCT class_info.title,
                 class_lecturers.lecturer_types,
                 class_lecturers.lecturer_names_ja,
                 class_lecturers.lecturer_names_kana,
-                class_lecturers.lecturer_names_en
+                class_lecturers.lecturer_names_en,
+                class_lecturers.lecturer_emails
 FROM class_info
 LEFT JOIN class_lecturers ON class_info.year_class_id = class_lecturers.year_class_id
 LIMIT 1;
