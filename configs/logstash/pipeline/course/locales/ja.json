@@ -36,6 +36,23 @@
     "16": "アラビア語",
     "18": "イタリア語"
   },
+  "category": {
+    "researchSeminars": " 1.研究プロジェクト科目",
+    "introductorySubjects": " 2.基盤科目-総合講座科目",
+    "subjectsOfLanguageCommunication": " 3.基盤科目-言語コミュニケーション科目",
+    "dataScience1": " 4.基盤科目-データサイエンス科目-データサイエンス１",
+    "dataScience2": " 5.基盤科目-データサイエンス科目-データサイエンス２",
+    "subjectsOfFundamentalsOfInformationTechnology": " 6.基盤科目-情報技術基礎科目",
+    "wellnessSubjects": " 7.基盤科目-ウェルネス科目",
+    "interdisciplinarySubjects": " 8.基盤科目-共通科目",
+    "seriesOfPolicyManagement": " 9.先端科目-総合政策系",
+    "seriesOfEnvironmentAndInformationStudies": "10.先端科目-環境情報系",
+    "specialSubjects": "11.特設科目",
+    "specializedSubjectsInTeacherTraining": "12.教職課程教科に関する科目",
+    "optionalSubjects": "13.自由科目",
+    "coursesOfferedAtResearchInstitutesOnSfc": "14.SFC設置の諸研究所科目",
+    "coursesOfferedAtOtherFaculties": "15.他学部等設置科目"
+  },
   "class_type": {
     "lecture": "講義",
     "workshop": "実習・演習",

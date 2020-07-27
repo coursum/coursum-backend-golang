@@ -24,12 +24,7 @@ class_lecturers AS /* Aggregate columns by auth.projectid */
                    array_agg(auth_faculty.img) AS lecturer_imgs,
                    array_agg(auth_faculty.email) AS lecturer_emails
    FROM auth_faculty
-   GROUP BY auth_faculty.projectid), --
-class_master AS /* Filter class_master by criteria */
-  (SELECT *
-   FROM class_master
-   WHERE class_master.year = 2019
-     AND class_master.cur IN ('2014') )
+   GROUP BY auth_faculty.projectid)
 SELECT DISTINCT class_info.title,
                 class_info.title_e,
                 class_info.title_memo,
@@ -48,7 +43,6 @@ SELECT DISTINCT class_info.title,
                 class_info.class_room,
                 class_master.credit,
                 summary_info.language,
-                class_master.guide_u,
                 class_master.guide_u_e,
                 summary_info.summary,
                 summary_info.summary_e,
@@ -67,5 +61,4 @@ SELECT DISTINCT class_info.title,
 FROM class_info
 LEFT JOIN class_lecturers ON class_info.year_class_id = class_lecturers.year_class_id
 LEFT JOIN class_master ON class_info.kamoku_sort = class_master.kamoku_sort
-LEFT JOIN summary_info ON class_info.year_class_id = summary_info.year_class_id
-LIMIT 1;
+LEFT JOIN summary_info ON class_info.year_class_id = summary_info.year_class_id;

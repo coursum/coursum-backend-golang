@@ -58,6 +58,14 @@ def translate_language(language_code, locale)
   end
 end
 
+def translate_category_from_en_to_ja(category)
+  translate('ja', 'en') do |target, source|
+    key = source['category'].key(category)
+
+    target['category'][key]
+  end
+end
+
 def translate_types_from_ja_to_en(types)
   types.map do |type|
     translate('en', 'ja') do |target, source|
@@ -74,13 +82,13 @@ def filter(event)
   title_postscript_ja = event.get('title_memo') || ''
   title_postscript_en = event.get('title_memo_e') || ''
 
-  lecturer_ids = event.get('lecturer_ids')
-  lecturer_types = event.get('lecturer_types')
-  lecturer_names_ja = event.get('lecturer_names_ja')
-  lecturer_names_kana = event.get('lecturer_names_kana')
-  lecturer_names_en = event.get('lecturer_names_en')
-  lecturer_imgs = event.get('lecturer_imgs')
-  lecturer_emails = event.get('lecturer_emails')
+  lecturer_ids = event.get('lecturer_ids') || []
+  lecturer_types = event.get('lecturer_types') || []
+  lecturer_names_ja = event.get('lecturer_names_ja') || []
+  lecturer_names_kana = event.get('lecturer_names_kana') || []
+  lecturer_names_en = event.get('lecturer_names_en') || []
+  lecturer_imgs = event.get('lecturer_imgs') || []
+  lecturer_emails = event.get('lecturer_emails') || []
 
   lecturers = lecturer_ids.map.with_index do |_, index|
     lecturer_id = lecturer_ids[index]
@@ -114,16 +122,20 @@ def filter(event)
   # TODO: Investigate class_info column and translate to English
   schedule_span_ja = event.get('class_type')
 
-  classroom = event.get('class_room')
+  # TODO: Investigate and process class_room column
+  # maybe by split_sort(event.get('class_room'), ',')
+  classroom = event.get('class_room') || ''
 
-  credit = event.get('credit')
+  # TODO: Finding a proper fallback value for credit.
+  # For courses like PE, there is no credit.
+  credit = event.get('credit') || 0
 
   language = event.get('language')
   language_ja = translate_language(language, 'ja')
   language_en = translate_language(language, 'en')
 
-  category_ja = parse_category(event.get('guide_u'))
   category_en = parse_category(event.get('guide_u_e'))
+  category_ja = parse_category(translate_category_from_en_to_ja(event.get('guide_u_e')))
 
   summary_ja = strip_space(event.get('summary'))
   summary_en = strip_space(event.get('summary_e'))

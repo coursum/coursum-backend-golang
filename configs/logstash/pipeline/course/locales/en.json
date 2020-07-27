@@ -36,6 +36,23 @@
     "16": "Arabic",
     "18": "Italian"
   },
+  "category": {
+    "researchSeminars": " 1.Research Seminars",
+    "introductorySubjects": " 2.Fundamental Subjects - Introductory Subjects",
+    "subjectsOfLanguageCommunication": " 3.Fundamental Subjects - Subjects of Language Communication",
+    "dataScience1": " 4.Fundamental Subjects - Subjects of Data Science - Data Science 1",
+    "dataScience2": " 5.Fundamental Subjects - Subjects of Data Science - Data Science 2",
+    "subjectsOfFundamentalsOfInformationTechnology": " 6.Fundamental Subjects - Subjects of Fundamentals of Information Technology",
+    "wellnessSubjects": " 7.Fundamental Subjects - Wellness Subjects",
+    "interdisciplinarySubjects": " 8.Fundamental Subjects - Interdisciplinary Subjects",
+    "seriesOfPolicyManagement": " 9.Advanced Subjects - Series of Policy Management",
+    "seriesOfEnvironmentAndInformationStudies": "10.Advanced Subjects - Series of Environment And Information Studies",
+    "specialSubjects": "11.Special Subjects",
+    "specializedSubjectsInTeacherTraining": "12.Specialized Subjects in Teacher Training",
+    "optionalSubjects": "13.Optional Subjects",
+    "coursesOfferedAtResearchInstitutesOnSfc": "14.Courses Offered at Research Institutes on SFC",
+    "coursesOfferedAtOtherFaculties": "15.Courses Offered at Other Faculties"
+  },
   "class_type": {
     "lecture": "Lecture",
     "workshop": "Workshop",
