@@ -13,7 +13,7 @@ import (
 
 // HitStat is ...
 type HitStat struct {
-	Total   int64
+	Total   int
 	Latency int64 // Unit: milliseconds
 }
 
@@ -81,6 +81,16 @@ func sourceQueryString(query elastic.Query) (queryString string, err error) {
 	return
 }
 
+func countDocument(index string) (count int64, err error) {
+	count, err = client.Count(index).Do(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	return
+}
+
 // GetAllDocumentCounts will return the document count of all indices
 func GetAllDocumentCounts() (counts map[string]int64, err error) {
 	indexNames, err := client.IndexNames()
@@ -110,24 +120,34 @@ func GetAllDocumentCounts() (counts map[string]int64, err error) {
 
 // GetAllCourse will ...
 func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
+	count, err := countDocument(esDefaultIndex)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if count > 1000 {
+		count = 1000
+	}
+
 	query := elastic.NewMatchAllQuery()
 
 	searchResult, err := client.
 		Search(esDefaultIndex).
 		Query(query).
-		From(0).Size(10).
+		From(0).Size(int(count)).
 		Do(ctx)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	clientSearchResult.Stat.Latency = searchResult.TookInMillis
-	clientSearchResult.Stat.Total = searchResult.TotalHits()
-
 	for _, hit := range searchResult.Hits.Hits {
 		clientSearchResult.Hits = append(clientSearchResult.Hits, hit.Source)
 	}
+
+	clientSearchResult.Stat.Latency = searchResult.TookInMillis
+	clientSearchResult.Stat.Total = len(clientSearchResult.Hits)
 
 	return
 }
