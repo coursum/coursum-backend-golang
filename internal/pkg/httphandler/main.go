@@ -1,8 +1,10 @@
 package httphandler
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/coursum/coursum-backend/internal/pkg/elasticclient"
+	"github.com/gin-gonic/gin"
 )
 
 // GetIndex will respond the index page
@@ -18,4 +20,16 @@ func GetPing(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 	})
+}
+
+// GetCount will respond the document count
+func GetCount(c *gin.Context) {
+	counts, err := elasticclient.GetAllDocumentCounts()
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, counts)
+	return
 }
