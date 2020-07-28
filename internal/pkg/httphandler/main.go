@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// pretty will Prettify the JSON response
 func pretty(c *gin.Context, data interface{}) {
 	_, pretty := c.Request.URL.Query()["pretty"]
 

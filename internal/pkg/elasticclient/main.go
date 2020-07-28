@@ -10,6 +10,7 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
+// initClient will connect to the elasticsearch instance
 func initClient() (client *elastic.Client, err error) {
 	err = godotenv.Load()
 	if err != nil {
@@ -31,7 +32,7 @@ func initClient() (client *elastic.Client, err error) {
 var client, err = initClient()
 var ctx = context.Background()
 
-// GetAllDocumentCounts will return
+// GetAllDocumentCounts will return the document count of all indices
 func GetAllDocumentCounts() (counts map[string]int64, err error) {
 	indexNames, err := client.IndexNames()
 	if err != nil {
