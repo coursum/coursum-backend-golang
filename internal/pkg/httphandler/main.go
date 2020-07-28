@@ -7,6 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func pretty(c *gin.Context, data interface{}) {
+	_, pretty := c.Request.URL.Query()["pretty"]
+
+	if pretty {
+		c.IndentedJSON(http.StatusOK, data)
+	} else {
+		c.JSON(http.StatusOK, data)
+	}
+}
+
 // GetIndex will respond the index page
 func GetIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -30,6 +40,6 @@ func GetCount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, counts)
+	pretty(c, counts)
 	return
 }
