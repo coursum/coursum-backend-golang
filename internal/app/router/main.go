@@ -16,6 +16,7 @@ func Route() {
 	router.GET("/", httphandler.GetIndex)
 	router.GET("/ping", httphandler.GetPing)
 	router.GET("/count", httphandler.GetCount)
+	router.GET("/search", httphandler.GetSearch)
 
 	router.Run(":8000")
 }
