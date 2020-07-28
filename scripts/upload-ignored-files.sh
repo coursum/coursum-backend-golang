@@ -8,10 +8,27 @@ function invalid_option() {
   exit 1
 }
 
+source ./.env
+
+files=(
+  ".env"
+  "configs/logstash/driver"
+  "configs/postgresql/init-database"
+)
+
 while [[ ${#} > 0 ]]; do
   case ${1} in
     -n|--dry-run)
       dry_run="true"
+    ;;
+    --env)
+      files=(".env")
+    ;;
+    --driver)
+      files=("configs/logstash/driver")
+    ;;
+    --db|--database)
+      files=("configs/postgresql/init-database")
     ;;
     -*)
       invalid_option ${1}
@@ -22,14 +39,6 @@ while [[ ${#} > 0 ]]; do
   esac
   shift
 done
-
-source ./.env
-
-files=(
-  ".env"
-  "configs/logstash/driver"
-  "configs/postgresql/init-database"
-)
 
 for file in ${files[@]}; do
   command="scp -i ${IDENTITY_FILE} -pr ./${file} ${SERVER_USER}@${SERVER_URI}:~/${COMPOSE_PROJECT_NAME}/${file}"
