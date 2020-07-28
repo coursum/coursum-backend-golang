@@ -63,7 +63,6 @@ var client = initClient()
 var ctx = context.Background()
 
 // sourceQueryString will convert an elastic.Query to its JSON source (for debugging)
-// func sourceQueryString(query elastic.Query) (queryString interface{}, err error) {
 func sourceQueryString(query elastic.Query) (queryString string, err error) {
 	src, err := query.Source()
 	if err != nil {
@@ -148,6 +147,43 @@ func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
 
 	clientSearchResult.Stat.Latency = searchResult.TookInMillis
 	clientSearchResult.Stat.Total = len(clientSearchResult.Hits)
+
+	return
+}
+
+// SearchCourse will ...
+func SearchCourse(query string) (clientSearchResult ClientSearchResult, err error) {
+	count, err := countDocument(esDefaultIndex)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	multiMatchQuery := elastic.
+		NewMultiMatchQuery(
+			query,
+			"*",
+		).
+		Type("cross_fields").
+		Operator("And")
+
+	searchResult, err := client.
+		Search(esDefaultIndex).
+		Query(multiMatchQuery).
+		From(0).Size(int(count)).
+		Do(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	for _, hit := range searchResult.Hits.Hits {
+		clientSearchResult.Hits = append(clientSearchResult.Hits, hit.Source)
+	}
+
+	clientSearchResult.Stat.Latency = searchResult.TookInMillis
+	clientSearchResult.Stat.Total = len(clientSearchResult.Hits)
+	clientSearchResult.Query = query
 
 	return
 }

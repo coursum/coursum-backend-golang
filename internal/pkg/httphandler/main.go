@@ -47,7 +47,15 @@ func GetCount(c *gin.Context) {
 
 // GetSearch will ...
 func GetSearch(c *gin.Context) {
-	courses, err := elasticclient.GetAllCourse()
+	query := c.Query("query")
+	var courses elasticclient.ClientSearchResult
+	var err error
+	if query == "" {
+		courses, err = elasticclient.GetAllCourse()
+	} else {
+		courses, err = elasticclient.SearchCourse(query)
+	}
+
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
