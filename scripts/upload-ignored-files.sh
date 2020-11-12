@@ -12,8 +12,6 @@ source ./.env
 
 files=(
   ".env"
-  "configs/logstash/driver"
-  "configs/postgresql/init-database"
 )
 
 while [[ ${#} > 0 ]]; do
@@ -23,12 +21,6 @@ while [[ ${#} > 0 ]]; do
     ;;
     --env)
       files=(".env")
-    ;;
-    --driver)
-      files=("configs/logstash/driver")
-    ;;
-    --db|--database)
-      files=("configs/postgresql/init-database")
     ;;
     -*)
       invalid_option ${1}
