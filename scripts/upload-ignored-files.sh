@@ -12,6 +12,7 @@ source ./.env
 
 files=(
   ".env"
+  "database/syllabus-json-files"
 )
 
 while [[ ${#} > 0 ]]; do
@@ -21,6 +22,9 @@ while [[ ${#} > 0 ]]; do
     ;;
     --env)
       files=(".env")
+    ;;
+    --db|--database)
+      files=("database/syllabus-json-files")
     ;;
     -*)
       invalid_option ${1}
