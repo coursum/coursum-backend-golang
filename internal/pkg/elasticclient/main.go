@@ -39,7 +39,7 @@ func loadEnv() {
 		panic("Error loading .env file")
 	}
 
-	esURL = os.Getenv("ELASTICSEARCH_URL")
+	esURL = "http://" + os.Getenv("ELASTICSEARCH_USERINFO") + "@elasticsearch:9200"
 	esDefaultIndex = os.Getenv("ELASTICSEARCH_DEFAULT_INDEX")
 
 	return

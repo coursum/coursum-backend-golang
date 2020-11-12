@@ -1,4 +1,9 @@
+database/*
+!database/.gitkeep
 .env
+
+request
+response.json
 
 # development
 .go-version
