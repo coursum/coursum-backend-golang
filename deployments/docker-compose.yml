@@ -1,41 +1,6 @@
 version: "3.8"
 
 services:
-  postgresql:
-    image: postgres:${POSTGRESQL_VERSION}
-    environment:
-      - POSTGRES_PASSWORD
-      - POSTGRES_USER
-      - POSTGRES_DB
-      - INIT_USER
-      - INIT_PASSWORD
-      - INIT_DB
-      - INIT_PATH
-      - TZ
-    volumes:
-      - type: bind
-        source: ../configs/postgresql/docker-entrypoint-initdb.d/
-        target: /docker-entrypoint-initdb.d/
-        read_only: true
-      - type: bind
-        source: ../configs/postgresql/init-database/
-        target: /init-database/
-        read_only: true
-      - ../database/postgresql/data/:/var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
-    networks:
-      - elk
-    command:
-      - "postgres"
-      - "-c"
-      - "listen_addresses=*"
-      - "-c"
-      - "timezone=${TZ}"
-      - "-c"
-      - "log_timezone=${TZ}"
-    restart: always
-
   elasticsearch:
     build:
       context: ../
@@ -68,46 +33,6 @@ services:
     networks:
       - elk
     restart: always
-
-  logstash:
-    build:
-      context: ../
-      dockerfile: ./build/package/logstash.Dockerfile
-      args:
-        - ELK_VERSION
-    environment:
-      - "LS_JAVA_OPTS=-Xmx512m -Xms512m"
-      - LOGSTASH_JDBC_DRIVER
-      - INIT_PASSWORD
-      - INIT_USER
-      - INIT_DB
-      - TZ
-    volumes:
-      - type: bind
-        source: ../configs/logstash/config/logstash.yml
-        target: /usr/share/logstash/config/logstash.yml
-        read_only: true
-      - type: bind
-        source: ../configs/logstash/config/pipelines.yml
-        target: /usr/share/logstash/config/pipelines.yml
-        read_only: true
-      - type: bind
-        source: ../configs/logstash/driver/${LOGSTASH_JDBC_DRIVER}
-        target: /usr/share/logstash/logstash-core/lib/jars/${LOGSTASH_JDBC_DRIVER}
-        read_only: true
-      - type: bind
-        source: ../configs/logstash/pipeline/
-        target: /usr/share/logstash/pipeline/
-        read_only: true
-    ports:
-      - "5000:5000/tcp"
-      - "5000:5000/udp"
-      - "9600:9600"
-    networks:
-      - elk
-    depends_on:
-      - elasticsearch
-      - postgresql
 
   kibana:
     build:

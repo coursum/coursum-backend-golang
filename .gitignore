@@ -1,15 +1,4 @@
-database/postgresql/*
-!database/postgresql/.gitkeep
 .env
 
-# jdbc drivers
-*.jar
-
-# databases
-*.sql
-!configs/logstash/pipeline/**/*.sql
-
 # development
-.rubocop.yml
-.ruby-version
 .go-version
