@@ -1,3 +1,10 @@
+init:
+	@make create-index-templates
+	@make index-course-documents
+
+create-index-templates:
+	bash scripts/create-index-templates.sh
+
 index-course-documents:
 	bash scripts/index-course-documents.sh
 
