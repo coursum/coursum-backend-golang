@@ -46,11 +46,19 @@ func GetCount(c *gin.Context) {
 
 // GetSearch will ...
 func GetSearch(c *gin.Context) {
+	// Search function, WIP
+	// Use like this: http://localhost:8000/search?semester=秋&times=火曜日
+	// or this: http://localhost:8000/search?query=情報基礎&teacher=萩野
+	// All search parameters can be combined!
 	options := elasticclient.SearchOptions{
-		Query:    c.Query("query"),
-		Language: c.Query("language"),
-		Teacher:  c.Query("teacher"),
-		Giga:     c.Query("giga") == "true",
+		Query:     c.Query("query"),
+		Category:  c.Query("category"),
+		Classroom: c.Query("classroom"),
+		Language:  c.Query("language"),
+		Semester:  c.Query("semester"),
+		Teacher:   c.Query("teacher"),
+		Times:     c.Query("times"),
+		Giga:      c.Query("giga") == "true",
 	}
 	var courses elasticclient.ClientSearchResult
 	var err error
