@@ -1,10 +1,9 @@
 package httphandler
 
 import (
-	"net/http"
-
 	"github.com/coursum/coursum-backend/internal/pkg/elasticclient"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // pretty will Prettify the JSON response
@@ -47,13 +46,18 @@ func GetCount(c *gin.Context) {
 
 // GetSearch will ...
 func GetSearch(c *gin.Context) {
-	query := c.Query("query")
+	options := elasticclient.SearchOptions{
+		Query:    c.Query("query"),
+		Language: c.Query("language"),
+		Teacher:  c.Query("teacher"),
+		Giga:     c.Query("giga") == "true",
+	}
 	var courses elasticclient.ClientSearchResult
 	var err error
-	if query == "" {
+	if options == (elasticclient.SearchOptions{}) {
 		courses, err = elasticclient.GetAllCourse()
 	} else {
-		courses, err = elasticclient.SearchCourse(query)
+		courses, err = elasticclient.SearchCourse(options)
 	}
 
 	if err != nil {

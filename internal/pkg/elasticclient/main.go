@@ -11,6 +11,13 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
+type SearchOptions struct {
+	Query    string
+	Language string
+	Teacher  string
+	Giga     bool
+}
+
 // HitStat is ...
 type HitStat struct {
 	Total   int
@@ -152,24 +159,28 @@ func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
 }
 
 // SearchCourse will ...
-func SearchCourse(query string) (clientSearchResult ClientSearchResult, err error) {
+func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult, err error) {
 	count, err := countDocument(esDefaultIndex)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	multiMatchQuery := elastic.
-		NewMultiMatchQuery(
-			query,
-			"*",
-		).
-		Type("cross_fields").
-		Operator("And")
+	conditions := []elastic.Query{
+		elastic.NewMultiMatchQuery(
+			options.Query,
+			"*").
+			Type("cross_fields").
+			Operator("And"),
+	}
+
+	if options.Giga {
+		conditions = append(conditions, elastic.NewTermQuery("tag.giga", true))
+	}
 
 	searchResult, err := client.
 		Search(esDefaultIndex).
-		Query(multiMatchQuery).
+		Query(elastic.NewBoolQuery().Must(conditions...)).
 		From(0).Size(int(count)).
 		Do(ctx)
 	if err != nil {
@@ -183,7 +194,7 @@ func SearchCourse(query string) (clientSearchResult ClientSearchResult, err erro
 
 	clientSearchResult.Stat.Latency = searchResult.TookInMillis
 	clientSearchResult.Stat.Total = len(clientSearchResult.Hits)
-	clientSearchResult.Query = query
+	clientSearchResult.Query = options.Query
 
 	return
 }
