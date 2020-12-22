@@ -12,10 +12,14 @@ import (
 )
 
 type SearchOptions struct {
-	Query    string
-	Language string
-	Teacher  string
-	Giga     bool
+	Query     string
+	Classroom string
+	Category  string
+	Language  string
+	Semester  string
+	Teacher   string
+	Times     string
+	Giga      bool
 }
 
 // HitStat is ...
@@ -166,21 +170,9 @@ func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult,
 		return
 	}
 
-	conditions := []elastic.Query{
-		elastic.NewMultiMatchQuery(
-			options.Query,
-			"*").
-			Type("cross_fields").
-			Operator("And"),
-	}
-
-	if options.Giga {
-		conditions = append(conditions, elastic.NewTermQuery("tag.giga", true))
-	}
-
 	searchResult, err := client.
 		Search(esDefaultIndex).
-		Query(elastic.NewBoolQuery().Must(conditions...)).
+		Query(BuildQuery(options)).
 		From(0).Size(int(count)).
 		Do(ctx)
 	if err != nil {
