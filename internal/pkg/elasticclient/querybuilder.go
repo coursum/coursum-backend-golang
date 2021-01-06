@@ -49,12 +49,14 @@ func BuildQuery(options SearchOptions) *elastic.BoolQuery {
 		fields = append(fields, "schedule.times*")
 	}
 
-	conditions = append(conditions,
-		elastic.NewMultiMatchQuery(
-			options.Query,
-			fields...).
-			Type("cross_fields").
-			Operator("And"))
+	if options.Query != "" {
+		conditions = append(conditions,
+			elastic.NewMultiMatchQuery(
+				options.Query,
+				fields...).
+				Type("cross_fields").
+				Operator("And"))
+	}
 
 	return elastic.NewBoolQuery().Must(conditions...)
 }
