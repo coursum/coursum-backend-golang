@@ -8,3 +8,4 @@ response.json
 
 # development
 .go-version
+.devcontainer
