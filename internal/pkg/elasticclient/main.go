@@ -20,6 +20,8 @@ type SearchOptions struct {
 	Teacher   string
 	Times     string
 	Giga      bool
+	From      int
+	Size      int
 }
 
 // HitStat is ...
@@ -130,7 +132,7 @@ func GetAllDocumentCounts() (counts map[string]int64, err error) {
 }
 
 // GetAllCourse will ...
-func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
+func GetAllCourse(options SearchOptions) (clientSearchResult ClientSearchResult, err error) {
 	count, err := countDocument(esDefaultIndex)
 	if err != nil {
 		fmt.Println(err)
@@ -146,7 +148,7 @@ func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
 	searchResult, err := client.
 		Search(esDefaultIndex).
 		Query(query).
-		From(0).Size(int(count)).
+		From(options.From).Size(options.Size).
 		Do(ctx)
 	if err != nil {
 		fmt.Println(err)
@@ -165,12 +167,6 @@ func GetAllCourse() (clientSearchResult ClientSearchResult, err error) {
 
 // SearchCourse will ...
 func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult, err error) {
-	count, err := countDocument(esDefaultIndex)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	highlight := elastic.NewHighlight().
 		Fields(elastic.NewHighlighterField("*")).
 		PreTags("<mark>").
@@ -180,7 +176,7 @@ func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult,
 		Search(esDefaultIndex).
 		Highlight(highlight).
 		Query(BuildQuery(options)).
-		From(0).Size(int(count)).
+		From(options.From).Size(options.Size).
 		Do(ctx)
 	if err != nil {
 		fmt.Println(err)

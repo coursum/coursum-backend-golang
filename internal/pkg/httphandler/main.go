@@ -4,6 +4,7 @@ import (
 	"github.com/coursum/coursum-backend/internal/pkg/elasticclient"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 // pretty will Prettify the JSON response
@@ -60,10 +61,19 @@ func GetSearch(c *gin.Context) {
 		Times:     c.Query("times"),
 		Giga:      c.Query("giga") == "true",
 	}
+	if from, err := strconv.Atoi(c.Query("from")); err == nil {
+		options.From = from
+	}
+	if size, err := strconv.Atoi(c.Query("size")); err == nil {
+		options.Size = size
+	} else {
+		// This is an arbitrary number for the maximum page size
+		options.Size = 1000
+	}
 	var courses elasticclient.ClientSearchResult
 	var err error
 	if options == (elasticclient.SearchOptions{}) {
-		courses, err = elasticclient.GetAllCourse()
+		courses, err = elasticclient.GetAllCourse(options)
 	} else {
 		courses, err = elasticclient.SearchCourse(options)
 	}
