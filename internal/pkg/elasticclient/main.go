@@ -34,9 +34,10 @@ type Hit interface {
 
 // ClientSearchResult is ...
 type ClientSearchResult struct {
-	Query string `json:",omitempty"`
-	Stat  HitStat
-	Hits  []Hit
+	Query      string `json:",omitempty"`
+	Stat       HitStat
+	Hits       []Hit
+	Highlights []elastic.SearchHitHighlight
 }
 
 var esURL string
@@ -170,8 +171,14 @@ func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult,
 		return
 	}
 
+	highlight := elastic.NewHighlight().
+		Fields(elastic.NewHighlighterField("*")).
+		PreTags("<mark>").
+		PostTags("</mark>")
+
 	searchResult, err := client.
 		Search(esDefaultIndex).
+		Highlight(highlight).
 		Query(BuildQuery(options)).
 		From(0).Size(int(count)).
 		Do(ctx)
@@ -182,6 +189,7 @@ func SearchCourse(options SearchOptions) (clientSearchResult ClientSearchResult,
 
 	for _, hit := range searchResult.Hits.Hits {
 		clientSearchResult.Hits = append(clientSearchResult.Hits, hit.Source)
+		clientSearchResult.Highlights = append(clientSearchResult.Highlights, hit.Highlight)
 	}
 
 	clientSearchResult.Stat.Latency = searchResult.TookInMillis
