@@ -1,6 +1,10 @@
 init:
+	@make delete-course-index
 	@make create-index-templates
 	@make index-course-documents
+
+delete-course-index:
+	bash scripts/delete-course-index.sh
 
 create-index-templates:
 	bash scripts/create-index-templates.sh
