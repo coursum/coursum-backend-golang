@@ -10,4 +10,4 @@
   ## X-Pack security credentials
   #
   elasticsearch.username: elastic
-  elasticsearch.password: changeme
+  elasticsearch.password: ${ELASTIC_PASSWORD}
